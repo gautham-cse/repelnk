@@ -4,6 +4,13 @@ import fetch from 'node-fetch';
 dotenv.config();
 
 export default async function (req, res) {
+  console.log('Request received:', req);
+  console.log('Response object:', res);
+
+  if (!req || !res) {
+    return console.error('Request or Response object is undefined');
+  }
+
   const { query } = req;
 
   if (!query || !query.url) {
@@ -11,7 +18,6 @@ export default async function (req, res) {
   }
 
   const { url } = query;
-
   const apiKey = process.env.GOOGLE_API_KEY;
   const appwriteUrl = process.env.APPWRITE_URL;
 
@@ -48,6 +54,7 @@ export default async function (req, res) {
       return res.status(200).json({ isSafe: true });
     }
   } catch (error) {
+    console.error('Error verifying URL:', error);
     return res.status(500).json({ error: 'Error verifying URL' });
   }
 }
