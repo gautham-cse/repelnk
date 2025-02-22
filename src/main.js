@@ -46,7 +46,21 @@ export default async function (req, res) {
       body: JSON.stringify(requestBody),
     });
 
-    const data = await response.json();
+    const responseBody = await response.text(); // Use .text() to capture the raw response
+
+    // If the response body is not empty, try to parse it
+    let data = {};
+    if (responseBody) {
+      try {
+        data = JSON.parse(responseBody); // Try parsing the JSON
+      } catch (err) {
+        console.error('Failed to parse JSON response:', err);
+        return res.status(500).json({ error: 'Error parsing JSON response' });
+      }
+    } else {
+      console.error('Empty response body');
+      return res.status(500).json({ error: 'Empty response body from Google Safe Browsing API' });
+    }
 
     if (data.matches && data.matches.length > 0) {
       return res.status(200).json({ isSafe: false });
