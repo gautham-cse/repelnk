@@ -4,18 +4,21 @@ import fetch from 'node-fetch';
 dotenv.config();
 
 export default async function (req, res) {
-  const { url } = req.query;
+  const { query } = req;
 
-  if (!url) {
+  if (!query || !query.url) {
     return res.status(400).json({ error: 'URL is required' });
   }
 
-  const apiKey = process.env.API_KEY;
+  const { url } = query;
+
+  const apiKey = process.env.GOOGLE_API_KEY;
+  const appwriteUrl = process.env.APPWRITE_URL;
 
   const endpoint = 'https://safebrowsing.googleapis.com/v4/threatMatches:find';
   const requestBody = {
     client: {
-      clientId: "repelnk-client-engine",
+      clientId: "your-project-id",
       clientVersion: "1.0.0"
     },
     threatInfo: {
